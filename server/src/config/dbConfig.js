@@ -5,13 +5,17 @@ export default async function connectDB() {
   try {
     const DB_URL = NODE_ENV === "development" ? DEV_DB_URL : PROD_DB_URL;
 
-    if (!DB_URL) {
+    console.log("DEV_DB_URL:", DEV_DB_URL);
+
+    if (!DEV_DB_URL || !PROD_DB_URL) {
       throw new Error(
-        "MongoDB URI is undefined. Check your .env file or serverConfig.js."
+        "Database connection string is missing in environment variables."
       );
     }
 
-    await mongoose.connect(DB_URL);
+    await mongoose.connect(
+      NODE_ENV === "development" ? DEV_DB_URL : PROD_DB_URL
+    );
     console.log(`✅ Connected to MongoDB from ${NODE_ENV} environment`);
   } catch (error) {
     console.error("❌ Error connecting to database:", error.message);
